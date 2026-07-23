@@ -4,7 +4,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { ChevronDown, Info } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -91,9 +91,7 @@ export function FxSummaryCard() {
       <div>
         <p className="flex items-center gap-1.5 text-sm text-text-secondary">
           Total FX units
-          <span className="flex size-4 items-center justify-center rounded-full bg-text-primary text-white">
-            <Info size={11} />
-          </span>
+          <Image src="/eye.svg" alt="" width={16} height={16} />
         </p>
         <div className="mt-2 flex items-center gap-2">
           <span className="flex size-8 items-center justify-center rounded-full bg-canvas text-sm text-text-secondary">

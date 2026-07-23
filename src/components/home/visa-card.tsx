@@ -12,12 +12,16 @@ type Props = {
 
 export function VisaCard({ cardLast4, validThru, balance, name }: Props) {
   return (
-    <div className="relative h-44 flex-1 overflow-hidden rounded-2xl text-white">
+    <div className="relative h-44 max-w-88.25 flex-1 overflow-hidden rounded-2xl text-white">
+      {/* max-w keeps the container at the artwork's own aspect ratio
+          (1239x618) — without it, flex-1 could stretch this far wider than
+          the source image on large screens, cropping the design out of view
+          and pushing the overlay text to the very edge. */}
       <Image
         src="/Horizontal Design.png"
         alt=""
         fill
-        sizes="(min-width: 1024px) 400px, 100vw"
+        sizes="353px"
         className="object-cover"
         priority
       />
