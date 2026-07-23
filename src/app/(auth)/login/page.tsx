@@ -17,7 +17,7 @@ export default async function LoginPage({
 
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center gap-6 bg-canvas p-6">
-      <Image src="/logo.svg" alt="SohCahToa Holdings" width={48} height={48} />
+      <Image src="/logo.svg" alt="SohCahToa Holdings" width={120} height={49} priority />
 
       <section className="w-full max-w-sm rounded-[--radius-card] border border-border bg-surface p-6 shadow-[--shadow-card]">
         <h1 className="font-display text-xl font-semibold">Welcome back</h1>

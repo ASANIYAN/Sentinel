@@ -33,7 +33,7 @@ export function Sidebar() {
   return (
     <aside className="flex h-full w-60 shrink-0 flex-col border-r border-border bg-surface">
       <div className="p-5">
-        <Image src="/logo.svg" alt="SohCahToa Payout BDC" width={108} height={44} />
+        <Image src="/logo.svg" alt="SohCahToa Payout BDC" width={108} height={44} priority />
       </div>
 
       <nav className="flex flex-1 flex-col gap-1 px-3">
