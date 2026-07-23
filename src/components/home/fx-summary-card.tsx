@@ -3,7 +3,8 @@
 // this reproduces the two Figma states (FX bought/USD, Others/Medicals).
 
 import { useState } from "react";
-import { ChevronDown, CircleArrowDown, Info, ShoppingBag, Store } from "lucide-react";
+import Image from "next/image";
+import { ChevronDown, Info } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,9 +35,9 @@ const CATEGORIES = [
 ] as const;
 
 const ACTIONS = [
-  { label: "Buy FX", icon: ShoppingBag },
-  { label: "Sell FX", icon: Store },
-  { label: "Receive money", icon: CircleArrowDown },
+  { label: "Buy FX", icon: "/wallet-minus.svg" },
+  { label: "Sell FX", icon: "/wallet-add.svg" },
+  { label: "Receive money", icon: "/money.svg" },
 ];
 
 // Mock total — Task 1 uses static data (CLAUDE.md); it does not vary with
@@ -89,7 +90,10 @@ export function FxSummaryCard() {
 
       <div>
         <p className="flex items-center gap-1.5 text-sm text-text-secondary">
-          Total FX units <Info size={14} />
+          Total FX units
+          <span className="flex size-4 items-center justify-center rounded-full bg-text-primary text-white">
+            <Info size={11} />
+          </span>
         </p>
         <div className="mt-2 flex items-center gap-2">
           <span className="flex size-8 items-center justify-center rounded-full bg-canvas text-sm text-text-secondary">
@@ -100,13 +104,13 @@ export function FxSummaryCard() {
       </div>
 
       <div className="flex gap-3">
-        {ACTIONS.map(({ label, icon: Icon }) => (
+        {ACTIONS.map(({ label, icon }) => (
           <button
             key={label}
             type="button"
-            className="flex flex-1 flex-col items-center gap-2 rounded-[--radius-control] border border-border px-4 py-3 text-xs font-medium text-text-primary"
+            className="flex flex-1 flex-col items-center gap-2 rounded-[--radius-control] border border-border px-4 py-3 text-xs font-medium text-text-primary transition-[transform,background-color] duration-150 ease-out hover:bg-canvas active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
           >
-            <Icon size={20} strokeWidth={2} />
+            <Image src={icon} alt="" width={20} height={20} />
             {label}
           </button>
         ))}
