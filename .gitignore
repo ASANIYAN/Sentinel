@@ -44,3 +44,5 @@ CLAUDE.md
 AGENTS.md
 DESIGN.md
 IMPLEMENTATION.md
+# committed template — real secrets stay in .env.local
+!.env.example
