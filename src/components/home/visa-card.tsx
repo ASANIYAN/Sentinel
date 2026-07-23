@@ -1,5 +1,5 @@
-// Card art uses the exported Figma background ("Horizontal Design.png") and
-// the official Visa wordmark (Visa_logo_white.svg) instead of CSS gradients.
+// Card art uses the exported Figma background (card_bg.png) and the
+// official Visa wordmark (Visa_logo_white.svg) instead of CSS gradients.
 
 import Image from "next/image";
 
@@ -18,7 +18,7 @@ export function VisaCard({ cardLast4, validThru, balance, name }: Props) {
           the source image on large screens, cropping the design out of view
           and pushing the overlay text to the very edge. */}
       <Image
-        src="/Horizontal Design.png"
+        src="/card_bg.png"
         alt=""
         fill
         sizes="353px"
