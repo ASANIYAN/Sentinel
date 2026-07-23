@@ -1,0 +1,51 @@
+"use client";
+// Client component: opens a dropdown and calls logout() on click.
+
+import Image from "next/image";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useSession } from "@/hooks/use-session";
+
+const ROLE_LABEL = {
+  admin: "Admin",
+  analyst: "Analyst",
+} as const;
+
+export function UserBlock() {
+  const { user, logout } = useSession();
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left outline-none">
+        <Image
+          src="/avatar.svg"
+          alt=""
+          width={32}
+          height={32}
+          className="size-8 shrink-0 rounded-full"
+        />
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-medium text-text-primary">
+            {user.name}
+          </p>
+          <p className="truncate text-xs text-text-secondary">{user.email}</p>
+        </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" side="top" className="w-56">
+        <DropdownMenuLabel className="text-xs text-text-secondary">
+          Signed in as {ROLE_LABEL[user.role]}
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onSelect={() => void logout()}>
+          Logout
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
