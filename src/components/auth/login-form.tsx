@@ -50,7 +50,13 @@ export function LoginForm({ from }: Props) {
     "w-full rounded-(--radius-control) border border-border bg-surface px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-secondary outline-none focus:border-accent focus:ring-2 focus:ring-accent/20";
 
   return (
-    <form onSubmit={onSubmit} noValidate className="mt-6 flex flex-col gap-4">
+    <form
+      onSubmit={onSubmit}
+      method="post"
+      action="/api/auth/login"
+      noValidate
+      className="mt-6 flex flex-col gap-4"
+    >
       <label className="flex flex-col gap-1.5 text-sm font-medium">
         Email
         <input
