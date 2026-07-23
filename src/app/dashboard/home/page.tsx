@@ -1,4 +1,12 @@
-// Placeholder for the Task 1 Figma home screen, built in EPIC 3 (S-301–S-304).
+import { FxSummaryCard } from "@/components/home/fx-summary-card";
+import { TransactionListCard } from "@/components/home/transaction-list-card";
+
+// Full grid assembly (cards column) lands in S-304.
 export default function HomePage() {
-  return <div className="p-6 text-sm text-text-secondary">Home — coming in EPIC 3.</div>;
+  return (
+    <div className="flex max-w-xl flex-col gap-5">
+      <FxSummaryCard />
+      <TransactionListCard title="FX transactions" />
+    </div>
+  );
 }
