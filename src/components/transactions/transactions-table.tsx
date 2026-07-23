@@ -15,9 +15,10 @@ import type { Transaction } from "@/types/transaction";
 
 type Props = {
   data: Transaction[];
+  pageSize: number;
 };
 
-export function TransactionsTable({ data }: Props) {
+export function TransactionsTable({ data, pageSize }: Props) {
   const rows = useTransactionsStore((s) => s.rows);
   const seedFromServer = useTransactionsStore((s) => s.seedFromServer);
   const { status, sort, order, from, to } = useTableParams();
@@ -26,8 +27,8 @@ export function TransactionsTable({ data }: Props) {
   // Re-seeds on every navigation: `data` is a new array reference each
   // time the server page re-renders for new searchParams.
   useEffect(() => {
-    seedFromServer(data);
-  }, [data, seedFromServer]);
+    seedFromServer(data, pageSize);
+  }, [data, pageSize, seedFromServer]);
 
   const { connected, newCount, dismissNewCount } = useTransactionStream({
     status,
