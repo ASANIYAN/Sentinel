@@ -12,16 +12,17 @@ type Props = {
 
 export function VisaCard({ cardLast4, validThru, balance, name }: Props) {
   return (
-    <div className="relative h-44 max-w-88.25 flex-1 overflow-hidden rounded-2xl text-white">
+    <div className="relative h-44 max-w-102.5 flex-1 overflow-hidden rounded-2xl text-white">
       {/* max-w keeps the container at the artwork's own aspect ratio
-          (1239x618) — without it, flex-1 could stretch this far wider than
-          the source image on large screens, cropping the design out of view
-          and pushing the overlay text to the very edge. */}
+          (cropped to the card edges, ~2.33:1) — without it, flex-1 could
+          stretch this far wider than the source image on large screens,
+          cropping the design out of view and pushing the overlay text to
+          the very edge. */}
       <Image
-        src="/card_bg.png"
+        src="/card_bg.jpg"
         alt=""
         fill
-        sizes="353px"
+        sizes="410px"
         className="object-cover"
         priority
       />
@@ -37,7 +38,9 @@ export function VisaCard({ cardLast4, validThru, balance, name }: Props) {
 
         <div className="flex items-end justify-between">
           <div>
-            <p className="font-mono text-sm tracking-widest">•••• {cardLast4}</p>
+            <p className="font-mono text-sm tracking-widest">
+              •••• {cardLast4}
+            </p>
             <p className="mt-1 text-[9px] font-medium uppercase leading-tight opacity-80">
               Valid
               <br />
