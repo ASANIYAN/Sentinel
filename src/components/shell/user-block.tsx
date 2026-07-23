@@ -29,7 +29,7 @@ export function UserBlock({ collapsed }: Props) {
   const trigger = (
     <DropdownMenuTrigger
       aria-label={collapsed ? user.name : undefined}
-      className={`flex items-center gap-3 rounded-xl border border-transparent py-2 text-left outline-none transition-colors hover:border-border hover:bg-canvas data-[state=open]:border-border data-[state=open]:bg-canvas ${
+      className={`flex items-center gap-3 rounded-xl border border-transparent py-2 text-left transition-colors hover:border-border hover:bg-canvas focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 data-[state=open]:border-border data-[state=open]:bg-canvas ${
         collapsed ? "w-fit px-1" : "w-full px-3"
       }`}
     >

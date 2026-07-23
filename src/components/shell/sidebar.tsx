@@ -46,7 +46,7 @@ export function Sidebar({ collapsed = false }: Props) {
   return (
     <TooltipProvider>
       <aside
-        className={`flex h-full shrink-0 flex-col overflow-hidden rounded-(--radius-card) border border-border bg-surface shadow-(--shadow-card) transition-[width] duration-200 ease-out ${
+        className={`flex h-full shrink-0 flex-col overflow-hidden rounded-(--radius-card) border border-border bg-surface shadow-(--shadow-card) contain-layout transition-[width] duration-200 ease-out ${
           collapsed ? "w-20" : "w-60"
         }`}
       >
