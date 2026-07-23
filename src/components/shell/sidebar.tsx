@@ -56,7 +56,7 @@ export function Sidebar({ collapsed = false }: Props) {
               S
             </span>
           ) : (
-            <Image src="/logo.svg" alt="SohCahToa Payout BDC" width={108} height={44} priority />
+            <Image src="/logo.svg" alt="SohCahToa Payout BDC" width={108} height={44} priority className="h-auto w-auto" />
           )}
         </div>
 

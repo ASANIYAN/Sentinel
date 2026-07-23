@@ -14,12 +14,13 @@ export function VisaCard({ cardLast4, validThru, balance, name }: Props) {
   const [balanceMajor, balanceMinor] = balance.split(".");
 
   return (
-    <div className="relative h-44 max-w-102.5 flex-1 overflow-hidden rounded-2xl text-white">
-      {/* max-w keeps the container at the artwork's own aspect ratio
-          (cropped to the card edges, ~2.33:1) — without it, flex-1 could
-          stretch this far wider than the source image on large screens,
-          cropping the design out of view and pushing the overlay text to
-          the very edge. */}
+    <div className="relative aspect-1451/623 max-w-102.5 flex-1 self-start overflow-hidden rounded-2xl text-white">
+      {/* aspect-ratio matches card_bg.jpg's native 1451x623 px so the box
+          scales as one unit. self-start opts out of the row's default
+          align-items: stretch — otherwise flex would force this card's
+          height to match AddCardSlot's height regardless of aspect-ratio,
+          breaking the ratio whenever available width drifted from max-w.
+          AddCardSlot now stretches to match this card's height instead. */}
       <Image
         src="/card_bg.jpg"
         alt=""

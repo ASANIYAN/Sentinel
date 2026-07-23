@@ -63,3 +63,36 @@ body {
 
 /* Amount cells: apply Tailwind's `tabular-nums` utility on every amount
    cell (tables, lists, totals) so digit columns align — DESIGN.md §2. */
+
+/* Centered-modal enter animation (logout confirm, and any future Dialog).
+   No tailwindcss-animate plugin is installed, so this is a plain
+   @keyframes pair referenced via Tailwind's arbitrary animate-[] syntax. */
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

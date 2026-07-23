@@ -12,7 +12,7 @@ export function MobileNav() {
 
   return (
     <div className="flex items-center justify-between rounded-(--radius-card) border border-border bg-surface p-3 shadow-(--shadow-card) lg:hidden">
-      <Image src="/logo.svg" alt="SohCahToa Payout BDC" width={92} height={38} priority />
+      <Image src="/logo.svg" alt="SohCahToa Payout BDC" width={92} height={38} priority className="h-auto w-auto" />
 
       <Sheet open={open} onOpenChange={setOpen}>
         <button
