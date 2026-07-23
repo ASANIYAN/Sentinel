@@ -3,7 +3,9 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 import { loginSchema } from "@/lib/validators";
+import type { LoginResponse } from "@/types/api";
 
 type Props = {
   from?: string;
@@ -38,6 +40,8 @@ export function LoginForm({ from }: Props) {
         setError(body?.error?.message ?? "Sign-in failed. Try again.");
         return;
       }
+      const body: LoginResponse = await res.json();
+      toast.success(`Welcome back, ${body.user.name}`);
       router.push(from ?? "/dashboard/home");
     } catch {
       setError("Network error. Try again.");
