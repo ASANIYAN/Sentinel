@@ -3,10 +3,11 @@
 // subscribes to the SSE stream. Converted from a server component in
 // S-502, once the store existed to justify it.
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { EmptyState } from "@/components/transactions/empty-state";
 import { TransactionRow } from "@/components/transactions/transaction-row";
 import { LiveIndicator } from "@/components/transactions/live-indicator";
+import { DetailSheet } from "@/components/transactions/detail-sheet";
 import { useTransactionsStore } from "@/hooks/use-transactions-store";
 import { useTransactionStream } from "@/hooks/use-transaction-stream";
 import { useTableParams } from "@/hooks/use-table-params";
@@ -20,6 +21,7 @@ export function TransactionsTable({ data }: Props) {
   const rows = useTransactionsStore((s) => s.rows);
   const seedFromServer = useTransactionsStore((s) => s.seedFromServer);
   const { status, sort, order, from, to } = useTableParams();
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   // Re-seeds on every navigation: `data` is a new array reference each
   // time the server page re-renders for new searchParams.
@@ -68,12 +70,22 @@ export function TransactionsTable({ data }: Props) {
             </thead>
             <tbody className="divide-y divide-border">
               {rows.map((txn) => (
-                <TransactionRow key={txn.id} txn={txn} />
+                <TransactionRow
+                  key={txn.id}
+                  txn={txn}
+                  onClick={() => setSelectedId(txn.id)}
+                />
               ))}
             </tbody>
           </table>
         </div>
       )}
+
+      <DetailSheet
+        transaction={rows.find((r) => r.id === selectedId) ?? null}
+        open={selectedId !== null}
+        onOpenChange={(open) => !open && setSelectedId(null)}
+      />
     </div>
   );
 }

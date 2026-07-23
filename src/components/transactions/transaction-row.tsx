@@ -27,15 +27,19 @@ const HIGH_RISK_THRESHOLD = 70;
 
 type Props = {
   txn: Transaction;
+  onClick: () => void;
 };
 
 // Memoized so an SSE update to one row (a new upsert/updateRow in the
 // store) does not re-render every other row (AD-7).
-export const TransactionRow = memo(function TransactionRow({ txn }: Props) {
+export const TransactionRow = memo(function TransactionRow({ txn, onClick }: Props) {
   const Icon = ICON_BY_TYPE[txn.type];
 
   return (
-    <tr>
+    <tr
+      onClick={onClick}
+      className="cursor-pointer hover:bg-canvas"
+    >
       <td className="px-4 py-3">
         <div className="flex items-center gap-3">
           <span
