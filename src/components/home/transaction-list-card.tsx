@@ -69,12 +69,12 @@ export function TransactionListCard({ title }: Props) {
     category === "all" ? ROWS : ROWS.filter((r) => r.category === category);
 
   return (
-    <section className="flex flex-col gap-4 rounded-[--radius-card] border border-border bg-surface p-6 shadow-[--shadow-card]">
+    <section className="flex flex-col gap-4 rounded-(--radius-card) border border-border bg-surface p-6 shadow-(--shadow-card)">
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-base font-semibold text-text-primary">{title}</h2>
         <button
           type="button"
-          className="rounded-[--radius-pill] border border-border bg-surface px-3.5 py-1.5 text-sm text-text-secondary transition-colors duration-150 ease-out hover:bg-canvas active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
+          className="rounded-(--radius-pill) border border-border bg-surface px-3.5 py-1.5 text-sm text-text-secondary transition-colors duration-150 ease-out hover:bg-canvas active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
         >
           See all
         </button>

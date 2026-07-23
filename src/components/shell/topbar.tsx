@@ -28,7 +28,7 @@ export function Topbar({ name }: Props) {
   const { text, emoji } = greeting();
 
   return (
-    <header className="flex items-center justify-between gap-4 rounded-[--radius-card] border border-border bg-surface p-4 shadow-[--shadow-card]">
+    <header className="flex items-center justify-between gap-4 rounded-(--radius-card) border border-border bg-surface p-4 shadow-(--shadow-card)">
       <div className="flex min-w-0 items-center gap-3">
         <Image
           src="/avatar.svg"
@@ -46,7 +46,7 @@ export function Topbar({ name }: Props) {
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="hidden w-40 items-center gap-2 rounded-[--radius-pill] border border-border bg-canvas px-4 py-2.5 text-text-secondary sm:flex md:w-56 lg:w-72">
+        <div className="hidden w-40 items-center gap-2 rounded-(--radius-pill) border border-border bg-canvas px-4 py-2.5 text-text-secondary sm:flex md:w-56 lg:w-72">
           <SearchIcon size={16} className="shrink-0" />
           <span className="flex-1 truncate text-sm">Search</span>
           <span className="hidden rounded-md border border-border px-1.5 py-0.5 font-mono text-[11px] md:block">
@@ -69,7 +69,7 @@ export function Topbar({ name }: Props) {
         >
           <NotificationIcon size={18} />
           {/* Static mock count — no notifications feature is in scope. */}
-          <span className="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-[--radius-pill] bg-accent text-[10px] font-semibold text-white">
+          <span className="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-(--radius-pill) bg-accent text-[10px] font-semibold text-white">
             9
           </span>
         </button>

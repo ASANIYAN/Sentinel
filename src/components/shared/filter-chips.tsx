@@ -28,7 +28,7 @@ export function FilterChips<T extends string>({
             key={chip.value}
             type="button"
             onClick={() => onChange(chip.value)}
-            className={`rounded-[--radius-pill] border px-3.5 py-1.5 text-sm transition-colors ${
+            className={`rounded-(--radius-pill) border px-3.5 py-1.5 text-sm transition-colors ${
               active
                 ? "border-accent bg-accent-soft font-medium text-accent"
                 : "border-border bg-surface text-text-secondary"

@@ -30,7 +30,7 @@ export default function DesignTestPage() {
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {swatches.map(([name, cls]) => (
             <div key={name} className="flex items-center gap-3">
-              <div className={`size-10 rounded-[--radius-control] ${cls}`} />
+              <div className={`size-10 rounded-(--radius-control) ${cls}`} />
               <span className="font-mono text-xs text-text-secondary">
                 {name}
               </span>
@@ -39,7 +39,7 @@ export default function DesignTestPage() {
         </div>
       </section>
 
-      <section className="flex flex-col gap-4 rounded-[--radius-card] border border-border bg-surface p-6 shadow-[--shadow-card]">
+      <section className="flex flex-col gap-4 rounded-(--radius-card) border border-border bg-surface p-6 shadow-(--shadow-card)">
         <h2 className="text-base font-semibold">Font roles</h2>
         <p className="font-sans text-sm">
           Inter (font-sans) — body, nav, table content, labels.

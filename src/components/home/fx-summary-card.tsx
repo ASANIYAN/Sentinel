@@ -56,12 +56,12 @@ export function FxSummaryCard() {
   const isFx = chip !== "others";
 
   return (
-    <section className="flex flex-col gap-5 rounded-[--radius-card] border border-border bg-surface p-6 shadow-[--shadow-card]">
+    <section className="flex flex-col gap-5 rounded-(--radius-card) border border-border bg-surface p-6 shadow-(--shadow-card)">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <FilterChips chips={CHIPS} value={chip} onChange={setChip} />
 
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center gap-1.5 rounded-[--radius-pill] bg-dark-pill px-3 py-1.5 text-sm text-white outline-none">
+          <DropdownMenuTrigger className="flex items-center gap-1.5 rounded-(--radius-pill) bg-dark-pill px-3 py-1.5 text-sm text-white outline-none">
             {isFx ? (
               <>
                 <span>{currency.flag}</span>
@@ -106,7 +106,7 @@ export function FxSummaryCard() {
           <button
             key={label}
             type="button"
-            className="flex flex-1 flex-col items-center gap-2 rounded-[--radius-control] border border-border px-4 py-3 text-xs font-medium text-text-primary transition-[transform,background-color] duration-150 ease-out hover:bg-canvas active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
+            className="flex flex-1 flex-col items-center gap-2 rounded-(--radius-control) border border-border px-4 py-3 text-xs font-medium text-text-primary transition-[transform,background-color] duration-150 ease-out hover:bg-canvas active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
           >
             <Image src={icon} alt="" width={20} height={20} />
             {label}

@@ -19,7 +19,7 @@ export default async function LoginPage({
     <main className="flex min-h-dvh flex-col items-center justify-center gap-6 bg-canvas p-6">
       <Image src="/logo.svg" alt="SohCahToa Holdings" width={120} height={49} priority />
 
-      <section className="w-full max-w-sm rounded-[--radius-card] border border-border bg-surface p-6 shadow-[--shadow-card]">
+      <section className="w-full max-w-sm rounded-(--radius-card) border border-border bg-surface p-6 shadow-(--shadow-card)">
         <h1 className="font-display text-xl font-semibold">Welcome back</h1>
         <p className="mt-1 text-sm text-text-secondary">
           Sign in to the transaction monitoring dashboard.
@@ -27,7 +27,7 @@ export default async function LoginPage({
         <LoginForm from={safeFrom} />
       </section>
 
-      <aside className="w-full max-w-sm rounded-[--radius-control] border border-border bg-accent-soft p-4 text-xs text-text-secondary">
+      <aside className="w-full max-w-sm rounded-(--radius-control) border border-border bg-accent-soft p-4 text-xs text-text-secondary">
         <p className="font-medium text-text-primary">Demo credentials</p>
         <p className="mt-1 font-mono">admin@sohcahtoa.test · password123</p>
         <p className="font-mono">analyst@sohcahtoa.test · password123</p>

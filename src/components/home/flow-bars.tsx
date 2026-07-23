@@ -13,9 +13,9 @@ function FlowRow({ label, amount, percent, barClassName, trackClassName }: FlowR
         <span className="text-text-secondary">{label}</span>
         <span className="tabular-nums text-text-primary">{amount}</span>
       </div>
-      <div className={`h-1.5 w-full overflow-hidden rounded-[--radius-pill] ${trackClassName}`}>
+      <div className={`h-1.5 w-full overflow-hidden rounded-(--radius-pill) ${trackClassName}`}>
         <div
-          className={`h-full rounded-[--radius-pill] ${barClassName}`}
+          className={`h-full rounded-(--radius-pill) ${barClassName}`}
           style={{ width: `${percent}%` }}
         />
       </div>
@@ -36,7 +36,7 @@ const MONEY_OUT_PERCENT = 72;
 
 export function FlowBars({ total, moneyIn, moneyOut }: Props) {
   return (
-    <section className="flex flex-col gap-5 rounded-[--radius-card] border border-border bg-surface p-6 shadow-[--shadow-card]">
+    <section className="flex flex-col gap-5 rounded-(--radius-card) border border-border bg-surface p-6 shadow-(--shadow-card)">
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-base font-semibold text-text-primary">
           Card transaction flows

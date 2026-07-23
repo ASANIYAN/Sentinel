@@ -31,7 +31,7 @@ export function Pagination({ total, page, pageSize }: Props) {
           disabled={page <= 1}
           onClick={() => setPage(page - 1)}
           aria-label="Previous page"
-          className="flex size-8 items-center justify-center rounded-[--radius-control] border border-border text-text-secondary disabled:opacity-40"
+          className="flex size-8 items-center justify-center rounded-(--radius-control) border border-border text-text-secondary disabled:opacity-40"
         >
           <ChevronLeft size={16} />
         </button>
@@ -42,7 +42,7 @@ export function Pagination({ total, page, pageSize }: Props) {
             type="button"
             onClick={() => setPage(p)}
             aria-current={p === page ? "page" : undefined}
-            className={`flex size-8 items-center justify-center rounded-[--radius-control] text-sm ${
+            className={`flex size-8 items-center justify-center rounded-(--radius-control) text-sm ${
               p === page
                 ? "bg-accent-soft font-medium text-accent"
                 : "text-text-secondary"
@@ -57,7 +57,7 @@ export function Pagination({ total, page, pageSize }: Props) {
           disabled={page >= pageCount}
           onClick={() => setPage(page + 1)}
           aria-label="Next page"
-          className="flex size-8 items-center justify-center rounded-[--radius-control] border border-border text-text-secondary disabled:opacity-40"
+          className="flex size-8 items-center justify-center rounded-(--radius-control) border border-border text-text-secondary disabled:opacity-40"
         >
           <ChevronRight size={16} />
         </button>

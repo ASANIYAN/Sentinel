@@ -45,7 +45,7 @@ export function TransactionsTable({ data }: Props) {
           <button
             type="button"
             onClick={dismissNewCount}
-            className="rounded-[--radius-pill] bg-accent-soft px-2.5 py-1 text-xs font-medium text-accent"
+            className="rounded-(--radius-pill) bg-accent-soft px-2.5 py-1 text-xs font-medium text-accent"
           >
             {newCount} new
           </button>
@@ -55,7 +55,7 @@ export function TransactionsTable({ data }: Props) {
       {rows.length === 0 ? (
         <EmptyState />
       ) : (
-        <div className="overflow-x-auto rounded-[--radius-card] border border-border bg-surface shadow-[--shadow-card]">
+        <div className="overflow-x-auto rounded-(--radius-card) border border-border bg-surface shadow-(--shadow-card)">
           <table className="w-full min-w-215 border-collapse text-sm">
             <thead>
               <tr className="border-b border-border text-left text-xs text-text-secondary">

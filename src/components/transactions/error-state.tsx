@@ -6,7 +6,7 @@ type Props = {
 
 export function ErrorState({ onRetry }: Props) {
   return (
-    <div className="flex flex-col items-center gap-3 rounded-[--radius-card] border border-border bg-surface p-12 text-center shadow-[--shadow-card]">
+    <div className="flex flex-col items-center gap-3 rounded-(--radius-card) border border-border bg-surface p-12 text-center shadow-(--shadow-card)">
       <span className="flex size-12 items-center justify-center rounded-full bg-accent-soft text-accent">
         <TriangleAlert size={22} />
       </span>
@@ -20,7 +20,7 @@ export function ErrorState({ onRetry }: Props) {
         <button
           type="button"
           onClick={onRetry}
-          className="mt-1 rounded-[--radius-control] border border-border px-3.5 py-1.5 text-sm font-medium text-text-primary"
+          className="mt-1 rounded-(--radius-control) border border-border px-3.5 py-1.5 text-sm font-medium text-text-primary"
         >
           Try again
         </button>

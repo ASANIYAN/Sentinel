@@ -19,7 +19,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         aria-expanded={!collapsed}
         onClick={() => setCollapsed((value) => !value)}
-        className={`absolute top-[calc(--spacing(4)+2.75rem)] hidden size-7 items-center justify-center rounded-full border border-border bg-surface text-text-secondary shadow-[--shadow-card] transition-[left] duration-200 ease-out lg:flex ${
+        className={`absolute top-[calc(--spacing(4)+2.75rem)] hidden size-7 items-center justify-center rounded-full border border-border bg-surface text-text-secondary shadow-(--shadow-card) transition-[left] duration-200 ease-out lg:flex ${
           collapsed
             ? "left-[calc(--spacing(4)+(--spacing(20))-14px)]"
             : "left-[calc(--spacing(4)+(--spacing(60))-14px)]"
