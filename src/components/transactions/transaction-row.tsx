@@ -38,7 +38,16 @@ export const TransactionRow = memo(function TransactionRow({ txn, onClick }: Pro
   return (
     <tr
       onClick={onClick}
-      className="cursor-pointer hover:bg-canvas"
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      role="button"
+      tabIndex={0}
+      aria-label={`View transaction ${txn.reference}, ${txn.merchant}`}
+      className="cursor-pointer outline-none hover:bg-canvas focus-visible:bg-canvas focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-inset"
     >
       <td className="px-4 py-3">
         <div className="flex items-center gap-3">

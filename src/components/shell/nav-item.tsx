@@ -37,8 +37,8 @@ export function NavItem({
         {icon}
         {collapsed && badge !== undefined && (
           <span
-            className={`absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-pill text-[9px] font-semibold text-white ${
-              disabled ? "bg-accent" : "bg-accent"
+            className={`absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-pill bg-accent text-[9px] font-semibold text-white ${
+              disabled ? "opacity-50" : ""
             }`}
           >
             {badge}
@@ -48,8 +48,8 @@ export function NavItem({
       {!collapsed && <span className="flex-1">{label}</span>}
       {!collapsed && badge !== undefined && (
         <span
-          className={`flex size-5 items-center justify-center rounded-pill text-[11px] font-semibold text-white ${
-            disabled ? "bg-accent text-text-secondary" : "bg-accent"
+          className={`flex size-5 items-center justify-center rounded-pill bg-accent text-[11px] font-semibold text-white ${
+            disabled ? "opacity-50" : ""
           }`}
         >
           {badge}

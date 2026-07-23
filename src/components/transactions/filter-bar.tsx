@@ -71,7 +71,7 @@ export function FilterBar() {
 
       <div className="flex items-center gap-2">
         <Popover>
-          <PopoverTrigger className="flex items-center gap-1.5 rounded-(--radius-pill) border border-border bg-surface px-3.5 py-1.5 text-sm text-text-secondary outline-none">
+          <PopoverTrigger className="flex items-center gap-1.5 rounded-(--radius-pill) border border-border bg-surface px-3.5 py-1.5 text-sm text-text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30">
             <CalendarIcon size={14} />
             {dateLabel}
           </PopoverTrigger>
@@ -90,7 +90,7 @@ export function FilterBar() {
         </Popover>
 
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center gap-1.5 rounded-(--radius-pill) border border-border bg-surface px-3.5 py-1.5 text-sm text-text-secondary outline-none">
+          <DropdownMenuTrigger className="flex items-center gap-1.5 rounded-(--radius-pill) border border-border bg-surface px-3.5 py-1.5 text-sm text-text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30">
             {activeSort.label}
             <ChevronDown size={14} />
           </DropdownMenuTrigger>

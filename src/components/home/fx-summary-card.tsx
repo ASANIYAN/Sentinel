@@ -61,7 +61,7 @@ export function FxSummaryCard() {
         <FilterChips chips={CHIPS} value={chip} onChange={setChip} />
 
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center gap-1.5 rounded-(--radius-pill) bg-dark-pill px-3 py-1.5 text-sm text-white outline-none">
+          <DropdownMenuTrigger className="flex items-center gap-1.5 rounded-(--radius-pill) bg-dark-pill px-3 py-1.5 text-sm text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2">
             {isFx ? (
               <>
                 <span>{currency.flag}</span>

@@ -46,18 +46,22 @@ export function Topbar({ name }: Props) {
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="hidden w-40 items-center gap-2 rounded-(--radius-pill) border border-border bg-canvas px-4 py-2.5 text-text-secondary sm:flex md:w-56 lg:w-72">
+        <button
+          type="button"
+          aria-label="Search"
+          className="hidden w-40 items-center gap-2 rounded-(--radius-pill) border border-border bg-canvas px-4 py-2.5 text-left text-text-secondary transition-colors hover:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 sm:flex md:w-56 lg:w-72"
+        >
           <SearchIcon size={16} className="shrink-0" />
           <span className="flex-1 truncate text-sm">Search</span>
           <span className="hidden rounded-md border border-border px-1.5 py-0.5 font-mono text-[11px] md:block">
             ⌘K
           </span>
-        </div>
+        </button>
 
         <button
           type="button"
           aria-label="Search"
-          className="flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-canvas text-text-secondary sm:hidden"
+          className="flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-canvas text-text-secondary transition-colors hover:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 sm:hidden"
         >
           <SearchIcon size={18} />
         </button>
