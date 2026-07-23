@@ -45,6 +45,11 @@ async function doRefresh(): Promise<boolean> {
   }
 }
 
+/**
+ * Shared teardown for both a forced logout (refresh failure) and a
+ * voluntary one (the user clicks Logout): clear cookies, abort in-flight
+ * requests, block new ones, notify listeners (e.g. close SSE), redirect.
+ */
 async function forceLogout(): Promise<void> {
   if (loggedOut) return;
   loggedOut = true;
@@ -62,6 +67,11 @@ async function forceLogout(): Promise<void> {
   if (typeof window !== "undefined") {
     window.location.assign("/login");
   }
+}
+
+/** Voluntary logout (e.g. the UserBlock's Logout item). */
+export async function logout(): Promise<void> {
+  await forceLogout();
 }
 
 export async function apiFetch(
