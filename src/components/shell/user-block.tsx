@@ -2,6 +2,7 @@
 // Client component: opens a dropdown and calls logout() on click.
 
 import Image from "next/image";
+import { ChevronDown } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,7 +23,7 @@ export function UserBlock() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left outline-none">
+      <DropdownMenuTrigger className="flex w-full items-center gap-3 rounded-xl border border-transparent px-3 py-2 text-left outline-none transition-colors hover:border-border hover:bg-canvas data-[state=open]:border-border data-[state=open]:bg-canvas">
         <Image
           src="/avatar.svg"
           alt=""
@@ -36,6 +37,7 @@ export function UserBlock() {
           </p>
           <p className="truncate text-xs text-text-secondary">{user.email}</p>
         </div>
+        <ChevronDown size={16} className="shrink-0 text-text-secondary" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" side="top" className="w-56">
         <DropdownMenuLabel className="text-xs text-text-secondary">

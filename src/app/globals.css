@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  /* Color — exact palette (DESIGN.md §1, do not substitute) */
+  /* Color — exact palette */
   --color-canvas: #fafafa; /* page background */
   --color-surface: #ffffff; /* cards, sidebar, topbar */
   --color-border: #efefef; /* hairlines, dividers, chip outlines */
