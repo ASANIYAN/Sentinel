@@ -49,7 +49,7 @@ export default async function TransactionsPage({
   return (
     <div className="flex flex-col gap-5">
       <FilterBar />
-      <TransactionsTable data={data} />
+      <TransactionsTable data={data} pageSize={query.pageSize} />
       <Pagination total={total} page={query.page} pageSize={query.pageSize} />
     </div>
   );

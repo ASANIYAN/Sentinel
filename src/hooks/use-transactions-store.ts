@@ -10,7 +10,8 @@ type SortOrder = "asc" | "desc";
 
 type TransactionsStore = {
   rows: Transaction[];
-  seedFromServer: (rows: Transaction[]) => void;
+  pageSize: number;
+  seedFromServer: (rows: Transaction[], pageSize: number) => void;
   upsert: (row: Transaction, sort: SortKey, order: SortOrder) => void;
   updateRow: (id: string, patch: Partial<Transaction>) => void;
 };
@@ -26,16 +27,23 @@ function sortRows(rows: Transaction[], sort: SortKey, order: SortOrder) {
 
 export const useTransactionsStore = create<TransactionsStore>((set) => ({
   rows: [],
+  pageSize: 10,
 
-  seedFromServer: (rows) => set({ rows }),
+  seedFromServer: (rows, pageSize) => set({ rows, pageSize }),
 
   upsert: (row, sort, order) =>
     set((state) => {
       const index = state.rows.findIndex((r) => r.id === row.id);
-      const rows =
-        index >= 0
-          ? state.rows.map((r, i) => (i === index ? row : r))
-          : sortRows([...state.rows, row], sort, order);
+      if (index >= 0) {
+        return { rows: state.rows.map((r, i) => (i === index ? row : r)) };
+      }
+      // A genuinely new row: insert in sort order, then cap at the current
+      // page size so a live event never grows the view past the page the
+      // user asked for (PDF §3: "preserve pagination + filters").
+      const rows = sortRows([...state.rows, row], sort, order).slice(
+        0,
+        state.pageSize,
+      );
       return { rows };
     }),
 

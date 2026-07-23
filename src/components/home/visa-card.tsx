@@ -11,6 +11,8 @@ type Props = {
 };
 
 export function VisaCard({ cardLast4, validThru, balance, name }: Props) {
+  const [balanceMajor, balanceMinor] = balance.split(".");
+
   return (
     <div className="relative h-44 max-w-102.5 flex-1 overflow-hidden rounded-2xl text-white">
       {/* max-w keeps the container at the artwork's own aspect ratio
@@ -28,29 +30,48 @@ export function VisaCard({ cardLast4, validThru, balance, name }: Props) {
       />
 
       <div className="relative flex h-full flex-col justify-between p-5">
-        <div className="flex items-start justify-between">
-          <div className="flex flex-col gap-3">
-            <span className="text-xs opacity-90">Prepaid card</span>
-            <Image src="/chip.svg" alt="" width={28} height={20} />
+        <div className="flex items-center justify-between">
+          <div className="flex gap-3">
+            <Image
+              src="/chip.svg"
+              alt=""
+              width={44}
+              height={32}
+              className="h-auto w-auto"
+            />
+            <span className="text-sm opacity-90 font-medium">Prepaid card</span>
           </div>
-          <Image src="/Visa_logo_white.svg" alt="Visa" width={56} height={19} />
+          <Image
+            src="/Visa_logo_white.svg"
+            alt="Visa"
+            width={60}
+            height={20}
+            className="h-auto w-auto"
+          />
         </div>
 
         <div className="flex items-end justify-between">
           <div>
-            <p className="font-mono text-sm tracking-widest">
+            <p className="font-mono text-base font-semibold tracking-wide">
               •••• {cardLast4}
             </p>
-            <p className="mt-1 text-[9px] font-medium uppercase leading-tight opacity-80">
-              Valid
-              <br />
-              Thru
-              <br />
-              {validThru}
-            </p>
+            <div className="mt-1 flex items-center gap-1">
+              <span className="flex flex-col text-[8px] font-medium uppercase leading-[1.1] opacity-80">
+                <span>Valid</span>
+                <span>Thru</span>
+              </span>
+              <span className="text-xs font-medium opacity-80">
+                {validThru}
+              </span>
+            </div>
           </div>
           <div className="text-right">
-            <p className="font-display text-lg font-bold">{balance}</p>
+            <p className="font-display text-xl font-bold">
+              {balanceMajor}
+              <span className="text-sm font-medium opacity-70">
+                .{balanceMinor}
+              </span>
+            </p>
             <p className="text-xs opacity-90">{name}</p>
           </div>
         </div>
