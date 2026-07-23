@@ -1,6 +1,8 @@
 "use client";
-// Client component: opens a dropdown and calls logout() on click.
+// Client component: opens a dropdown; logout goes through a confirm
+// dialog first since it's a destructive, hard-to-undo action.
 
+import { useState } from "react";
 import Image from "next/image";
 import { ChevronDown } from "lucide-react";
 import {
@@ -12,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { LogoutConfirmDialog } from "@/components/shell/logout-confirm-dialog";
 import { useSession } from "@/hooks/use-session";
 
 const ROLE_LABEL = {
@@ -25,6 +28,7 @@ type Props = {
 
 export function UserBlock({ collapsed }: Props) {
   const { user, logout } = useSession();
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   const trigger = (
     <DropdownMenuTrigger
@@ -55,24 +59,32 @@ export function UserBlock({ collapsed }: Props) {
   );
 
   return (
-    <DropdownMenu>
-      {collapsed ? (
-        <Tooltip>
-          <TooltipTrigger asChild>{trigger}</TooltipTrigger>
-          <TooltipContent side="right">{user.name}</TooltipContent>
-        </Tooltip>
-      ) : (
-        trigger
-      )}
-      <DropdownMenuContent align="start" side="top" className="w-56">
-        <DropdownMenuLabel className="text-xs text-text-secondary">
-          Signed in as {ROLE_LABEL[user.role]}
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onSelect={() => void logout()}>
-          Logout
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <DropdownMenu>
+        {collapsed ? (
+          <Tooltip>
+            <TooltipTrigger asChild>{trigger}</TooltipTrigger>
+            <TooltipContent side="right">{user.name}</TooltipContent>
+          </Tooltip>
+        ) : (
+          trigger
+        )}
+        <DropdownMenuContent align="start" side="top" className="w-56">
+          <DropdownMenuLabel className="text-xs text-text-secondary">
+            Signed in as {ROLE_LABEL[user.role]}
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onSelect={() => setConfirmOpen(true)}>
+            Logout
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <LogoutConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        onConfirm={logout}
+      />
+    </>
   );
 }
