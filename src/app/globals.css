@@ -1,26 +1,65 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Color — exact palette (DESIGN.md §1, do not substitute) */
+  --color-canvas: #fafafa; /* page background */
+  --color-surface: #ffffff; /* cards, sidebar, topbar */
+  --color-border: #efefef; /* hairlines, dividers, chip outlines */
+
+  --color-text-primary: #232323; /* headings, body, amounts, debit values */
+  --color-text-secondary: #666666; /* timestamps, labels, inactive nav, captions */
+
+  --color-accent: #ff6813; /* orange: active nav/chip, badges, brand, money-out bar, flag action */
+  --color-accent-soft: #fff6f1; /* light orange: active nav bg, badge tint, debit icon circles */
+
+  --color-positive: #2f7d01; /* green: credit amounts, money-in bar */
+  --color-positive-soft: #eff6ec; /* light green: credit icon circles */
+  --color-positive-muted: #e7ebe5; /* progress bar track / muted green surface */
+
+  --color-dark-pill: #232323; /* dark dropdown pills (currency / Medicals) */
+
+  /* shadcn semantic tokens mapped onto the palette — no red anywhere,
+     "destructive" resolves to the orange warning accent */
+  --color-background: #ffffff;
+  --color-foreground: #232323;
+  --color-card: #ffffff;
+  --color-card-foreground: #232323;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #232323;
+  --color-primary: #ff6813;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #fafafa;
+  --color-secondary-foreground: #232323;
+  --color-muted: #fafafa;
+  --color-muted-foreground: #666666;
+  --color-accent-foreground: #ffffff; /* text on bg-accent (shadcn hover states) */
+  --color-destructive: #ff6813;
+  --color-destructive-foreground: #ffffff;
+  --color-input: #efefef;
+  --color-ring: #ff6813;
+
+  /* Radius */
+  --radius-card: 16px; /* all cards */
+  --radius-control: 12px; /* action buttons, inputs */
+  --radius-pill: 9999px; /* chips, dropdowns, badges, search, status pills */
+
+  /* Shadow — cards separate mostly via border + bg, shadows are whisper-quiet */
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.04);
 }
 
+/* Fonts are provided as CSS variables by next/font in the root layout,
+   so the tokens must resolve at use time (inline). */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-space-grotesk);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  background: var(--color-canvas);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
+/* Amount cells: apply Tailwind's `tabular-nums` utility on every amount
+   cell (tables, lists, totals) so digit columns align — DESIGN.md §2. */
