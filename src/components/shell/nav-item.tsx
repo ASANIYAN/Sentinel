@@ -10,11 +10,43 @@ type Props = {
   label: string;
   icon: ReactNode;
   badge?: number;
+  disabled?: boolean;
 };
 
-export function NavItem({ href, label, icon, badge }: Props) {
+export function NavItem({ href, label, icon, badge, disabled }: Props) {
   const pathname = usePathname();
-  const active = pathname === href || pathname?.startsWith(`${href}/`);
+  const active =
+    !disabled && (pathname === href || pathname?.startsWith(`${href}/`));
+
+  const content = (
+    <>
+      <span className="flex size-7 shrink-0 items-center justify-center">
+        {icon}
+      </span>
+      <span className="flex-1">{label}</span>
+      {badge !== undefined && (
+        <span
+          className={`flex size-5 items-center justify-center rounded-[100px] text-[11px] font-semibold ${
+            disabled ? "bg-border text-text-secondary" : "bg-accent text-white"
+          }`}
+        >
+          {badge}
+        </span>
+      )}
+    </>
+  );
+
+  if (disabled) {
+    return (
+      <span
+        aria-disabled="true"
+        title="Not part of this build"
+        className="flex cursor-not-allowed items-center gap-3 rounded-xl px-3 py-2 text-sm text-text-secondary/50"
+      >
+        {content}
+      </span>
+    );
+  }
 
   return (
     <Link
@@ -25,19 +57,7 @@ export function NavItem({ href, label, icon, badge }: Props) {
           : "text-text-secondary hover:bg-canvas"
       }`}
     >
-      <span
-        className={`flex size-7 shrink-0 items-center justify-center rounded-lg ${
-          active ? "bg-accent text-white" : "text-text-secondary"
-        }`}
-      >
-        {icon}
-      </span>
-      <span className="flex-1">{label}</span>
-      {badge !== undefined && (
-        <span className="flex size-5 items-center justify-center rounded-[--radius-pill] bg-accent text-[11px] font-semibold text-white">
-          {badge}
-        </span>
-      )}
+      {content}
     </Link>
   );
 }
