@@ -101,7 +101,7 @@ Deliberate scope decision: non-rotating refresh tokens make concurrent refreshes
 ### AD-6: URL search params own query state
 
 `/dashboard/transactions?page=2&sort=createdAt&order=desc&status=flagged&from=...&to=...`
-Server component reads `searchParams`, fetches via query function, renders. Filter/sort/pagination controls are client components calling `router.push()`. No client-side query state duplication.
+Server component reads `searchParams`, fetches via the `GET /api/transactions` Route Handler (same-origin `fetch` with the request's `cookie` header forwarded, `cache: 'no-store'`), renders. Filter/sort/pagination controls are client components calling `router.push()`. No client-side query state duplication.
 
 ### AD-7: Server render seeds a client row store
 

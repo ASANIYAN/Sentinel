@@ -28,7 +28,6 @@ export async function GET(request: Request) {
       request.signal.addEventListener("abort", () => {
         clearInterval(interval);
         controller.close();
-        console.log("SSE transactions stream closed");
       });
     },
   });
