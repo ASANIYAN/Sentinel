@@ -213,6 +213,10 @@ export function getUserByEmail(email: string): User | undefined {
   return db().users.find((u) => u.email === email);
 }
 
+export function getUserById(id: string): User | undefined {
+  return db().users.find((u) => u.id === id);
+}
+
 /** Test-only: drop the store so the next access re-seeds. */
 export function resetDb(): void {
   globalThis.__db = undefined;

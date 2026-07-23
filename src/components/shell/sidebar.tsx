@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Calculator, CircleHelp, CreditCard, House, ArrowLeftRight } from "lucide-react";
 import { NavItem } from "@/components/shell/nav-item";
+import { UserBlock } from "@/components/shell/user-block";
 
 const ICON_SIZE = 18;
 
@@ -49,25 +50,7 @@ export function Sidebar() {
           Support
         </div>
 
-        {/* Avatar/name/email are placeholders wired to the real session
-            in S-203 (use-session). */}
-        <div className="flex items-center gap-3 rounded-xl px-3 py-2">
-          <Image
-            src="/avatar.svg"
-            alt=""
-            width={32}
-            height={32}
-            className="size-8 shrink-0 rounded-full"
-          />
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-text-primary">
-              Emmanuel Israel
-            </p>
-            <p className="truncate text-xs text-text-secondary">
-              emmanuel.e.isra...
-            </p>
-          </div>
-        </div>
+        <UserBlock />
       </div>
     </aside>
   );
