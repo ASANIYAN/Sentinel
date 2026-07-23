@@ -209,6 +209,41 @@ export function addTransaction(txn: Transaction): void {
   db().transactions.unshift(txn);
 }
 
+/** One realistic transaction for the SSE stream (AD-9) — genuinely random,
+ * unlike the deterministic seed. */
+export function generateTransaction(): Transaction {
+  const pick = <T,>(arr: T[]) => arr[Math.floor(Math.random() * arr.length)];
+  const now = new Date().toISOString();
+  const amount = Math.round(10 ** (3 + Math.random() * 4));
+  const riskScore =
+    Math.random() < 0.07
+      ? 80 + Math.floor(Math.random() * 20)
+      : 5 + Math.floor(Math.random() * 36);
+  const status = pick(STATUSES);
+  const flagged = status === "flagged";
+
+  return {
+    id: ulid(),
+    reference: `TXN-2026-${String(Math.floor(Math.random() * 999_999)).padStart(6, "0")}`,
+    amount,
+    currency: pick(CURRENCIES),
+    type: pick(TYPES),
+    status,
+    merchant: pick(MERCHANTS),
+    cardLast4: String(1000 + Math.floor(Math.random() * 9000)),
+    senderAccountMasked: `0${Math.floor(Math.random() * 900) + 100}••••${
+      Math.floor(Math.random() * 90) + 10
+    }`,
+    channel: pick(CHANNELS),
+    riskScore,
+    flagged,
+    flagReason: flagged ? "Unusual amount for this merchant" : null,
+    notes: [],
+    createdAt: now,
+    updatedAt: now,
+  };
+}
+
 export function getUserByEmail(email: string): User | undefined {
   return db().users.find((u) => u.email === email);
 }
