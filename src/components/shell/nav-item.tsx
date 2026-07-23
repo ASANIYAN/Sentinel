@@ -4,7 +4,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type Props = {
   href: string;
@@ -15,7 +19,14 @@ type Props = {
   collapsed?: boolean;
 };
 
-export function NavItem({ href, label, icon, badge, disabled, collapsed }: Props) {
+export function NavItem({
+  href,
+  label,
+  icon,
+  badge,
+  disabled,
+  collapsed,
+}: Props) {
   const pathname = usePathname();
   const active =
     !disabled && (pathname === href || pathname?.startsWith(`${href}/`));
@@ -26,8 +37,8 @@ export function NavItem({ href, label, icon, badge, disabled, collapsed }: Props
         {icon}
         {collapsed && badge !== undefined && (
           <span
-            className={`absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-(--radius-pill) text-[9px] font-semibold ${
-              disabled ? "bg-accent text-text-secondary" : "bg-accent text-white"
+            className={`absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-pill text-[9px] font-semibold text-white ${
+              disabled ? "bg-accent" : "bg-accent"
             }`}
           >
             {badge}
@@ -37,8 +48,8 @@ export function NavItem({ href, label, icon, badge, disabled, collapsed }: Props
       {!collapsed && <span className="flex-1">{label}</span>}
       {!collapsed && badge !== undefined && (
         <span
-          className={`flex size-5 items-center justify-center rounded-(--radius-pill) text-[11px] font-semibold ${
-            disabled ? "bg-accent text-text-secondary" : "bg-accent text-white"
+          className={`flex size-5 items-center justify-center rounded-pill text-[11px] font-semibold text-white ${
+            disabled ? "bg-accent text-text-secondary" : "bg-accent"
           }`}
         >
           {badge}
@@ -62,7 +73,11 @@ export function NavItem({ href, label, icon, badge, disabled, collapsed }: Props
       {content}
     </span>
   ) : (
-    <Link href={href} aria-label={collapsed ? label : undefined} className={itemClassName}>
+    <Link
+      href={href}
+      aria-label={collapsed ? label : undefined}
+      className={itemClassName}
+    >
       {content}
     </Link>
   );
