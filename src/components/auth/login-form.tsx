@@ -47,7 +47,7 @@ export function LoginForm({ from }: Props) {
   }
 
   const inputClass =
-    "w-full rounded-[--radius-control] border border-border bg-surface px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-secondary outline-none focus:border-accent focus:ring-2 focus:ring-accent/20";
+    "w-full rounded-(--radius-control) border border-border bg-surface px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-secondary outline-none focus:border-accent focus:ring-2 focus:ring-accent/20";
 
   return (
     <form onSubmit={onSubmit} noValidate className="mt-6 flex flex-col gap-4">
@@ -86,7 +86,7 @@ export function LoginForm({ from }: Props) {
       <button
         type="submit"
         disabled={submitting}
-        className="mt-1 rounded-[--radius-control] bg-accent px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+        className="mt-1 rounded-(--radius-control) bg-accent px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
       >
         {submitting ? "Signing in…" : "Sign in"}
       </button>

@@ -137,14 +137,14 @@ export function DetailSheet({ transaction, open, onOpenChange }: Props) {
                 value={flagReason}
                 onChange={(e) => setFlagReason(e.target.value)}
                 placeholder="Reason (try FAIL to see rollback)"
-                className="rounded-[--radius-control] border border-border px-3 py-2 text-sm outline-none focus:border-accent"
+                className="rounded-(--radius-control) border border-border px-3 py-2 text-sm outline-none focus:border-accent"
               />
             )}
             <button
               type="button"
               onClick={handleFlagClick}
               disabled={flagMutation.isPending}
-              className="rounded-[--radius-control] bg-accent px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+              className="rounded-(--radius-control) bg-accent px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
             >
               {transaction.flagged
                 ? "Unflag transaction"
@@ -180,12 +180,12 @@ export function DetailSheet({ transaction, open, onOpenChange }: Props) {
               value={noteText}
               onChange={(e) => setNoteText(e.target.value)}
               placeholder="Add a note"
-              className="flex-1 rounded-[--radius-control] border border-border px-3 py-2 text-sm outline-none focus:border-accent"
+              className="flex-1 rounded-(--radius-control) border border-border px-3 py-2 text-sm outline-none focus:border-accent"
             />
             <button
               type="submit"
               disabled={noteMutation.isPending}
-              className="rounded-[--radius-control] border border-border px-3 py-2 text-sm font-medium text-text-primary disabled:opacity-60"
+              className="rounded-(--radius-control) border border-border px-3 py-2 text-sm font-medium text-text-primary disabled:opacity-60"
             >
               Add
             </button>

@@ -2,7 +2,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import type { TransactionStatus } from "@/types/transaction";
 
 const statusPillVariants = cva(
-  "inline-flex items-center rounded-[--radius-pill] px-2.5 py-1 text-xs font-medium capitalize",
+  "inline-flex items-center rounded-(--radius-pill) px-2.5 py-1 text-xs font-medium capitalize",
   {
     variants: {
       status: {
