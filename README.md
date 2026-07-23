@@ -1,180 +1,247 @@
-# Sentinel — SohCahToa Holdings Assessment
+# Sentinel
 
-A Next.js (App Router) secure transaction monitoring dashboard, built for the SohCahToa Holdings frontend assessment. Two deliverables in one repo:
+Sentinel is a secure transaction monitoring dashboard. It is the submission for the SohCahToa Holdings frontend assessment. The application uses Next.js with the App Router.
 
-- **Task 1** — a faithful conversion of the Figma "Screens 1" home dashboard, at `/dashboard/home`
-- **Task 2** — a secure transaction monitoring admin dashboard, at `/login` and `/dashboard/transactions`
+---
 
-There is no real backend. Route Handlers simulate the entire API against an in-memory mock database.
+## 1. Purpose
 
-## Run it
+This document tells you:
+- How to install and start the application
+- How to log in with the two demo accounts
+- Which route answers each assessment task
+- Why the architecture makes each important decision
+- How the application obeys each security requirement
 
-```bash
-npm install
-cp .env.example .env.local   # set AUTH_SECRET to any long random string
-npm run dev
-```
+---
 
-Open `http://localhost:3000` and sign in with one of the demo accounts below.
+## 2. Technology
 
-## Test it
+The application uses these technologies:
+- Next.js (latest stable, App Router)
+- TypeScript
+- Route Handlers for all API endpoints
+- Middleware for route protection
+- React Server Components for the initial page render
+- Client Components only where the page needs interaction
+- Tailwind CSS v4
+- Zustand, TanStack Query, Zod, jose, lucide-react
 
-```bash
-npm test
-```
+The application does not use the Pages Router.
 
-Runs the Vitest suite (30 tests): the refresh-mutex "money test", pagination/sort/date-range query logic, JWT sign/verify, cookie flags, and the RBAC 403 check.
+---
 
-## Demo credentials
+## 3. Installation
 
-| Role    | Email                      | Password      |
-| ------- | -------------------------- | ------------- |
-| Admin   | `admin@sohcahtoa.test`     | `password123` |
-| Analyst | `analyst@sohcahtoa.test`   | `password123` |
+Obey these steps:
 
-Both are shown as a hint on the login page. Admin can flag transactions; analyst can only add notes — enforced server-side, not just hidden client-side.
+1. Clone the repository.
+2. Copy `.env.example` to `.env.local`.
+3. Run `npm install`.
+4. Run `npm run dev`.
+5. Open `http://localhost:3000` in your browser.
 
-## Task 1 ↔ Task 2 route mapping
+To run the tests, run `npm test`. The suite has 30 tests across 6 files.
 
-| Task   | Route                     | What it answers                                                                 |
-| ------ | -------------------------- | -------------------------------------------------------------------------------- |
-| —      | `/login`                   | Auth entry point (no Figma screen; built to the design tokens)                  |
-| Task 1 | `/dashboard/home`          | FX summary card (two chip/dropdown states), FX transaction list, cards column   |
-| Task 2 | `/dashboard/transactions`  | Server-rendered, URL-driven table with live updates and the admin detail sheet  |
+---
 
-The Sidebar/Topbar shell is shared by both tasks.
+## 4. Demo accounts
 
-## Architecture decisions
+Use one of these accounts on the login page:
 
-Each decision below states what was chosen, the alternative considered, and why.
+| Role | Email | Password |
+|---|---|---|
+| Admin | admin@sohcahtoa.test | password123 |
+| Analyst | analyst@sohcahtoa.test | password123 |
 
-### AD-1: Tokens in httpOnly cookies
+The admin can flag a transaction. The analyst cannot flag a transaction. Both roles can add a note. The server enforces this rule; the client only hides the button.
 
-**Chosen:** the login Route Handler sets three cookies — `access_token` (httpOnly, `SameSite=Lax`, `Secure` in production, ~15 min), `refresh_token` (httpOnly, same flags, ~7 days, scoped to `path=/api/auth`), and `token_expiry` (readable, holds a timestamp only — not a secret — so the client can schedule a proactive refresh). The login response body still returns the spec's exact JSON shape (`{ accessToken, refreshToken, expiresIn, user }`); this is informational only, client JS never stores or reads the token values.
+---
 
-**Alternative considered:** `localStorage`/`sessionStorage` tokens, read and attached by client JS.
+## 5. Task map
 
-**Why:** httpOnly cookies are inaccessible to JS, which closes the main XSS token-theft vector outright. `localStorage` tokens are just JS variables; anything that ever gets an XSS foothold reads them.
+The assessment has two tasks. This table shows the route for each task:
 
-### AD-2: Real JWTs via jose
+| Task | Route | Content |
+|---|---|---|
+| Task 1 | `/dashboard/home` | Conversion of the Figma "Screens 1" layout with its two states |
+| Task 2 | `/login` and `/dashboard/transactions` | The secure transaction monitoring dashboard |
 
-**Chosen:** HS256, signed with a secret from `AUTH_SECRET`. Payload: `sub` (user id), `role` (`admin` | `analyst`), `exp`. Middleware verifies signature and expiry with `jose`, which is Edge-runtime compatible. The `role` claim is the single source of truth for RBAC in both the middleware and the mutation handler.
+The two Figma screens show one layout in two states. The chip selection and the dropdown change the state. Task 1 includes this interaction.
 
-**Alternative considered:** an opaque session id looked up server-side per request.
+**Note on the `/dashboard` route:** the assessment brief names the transactions dashboard route `/dashboard`. This application serves Task 1 and Task 2 from two separate routes instead, because a single route cannot hold two different screens. A bare visit to `/dashboard` redirects to `/dashboard/home` (Task 1), not to `/dashboard/transactions`.
 
-**Why:** the assessment specifically wants a JWT implementation graded; `jose` is Edge-compatible unlike most Node-only JWT libraries, which matters because the middleware runs on the Edge runtime.
+---
 
-### AD-3: Middleware is a dumb gate
+## 6. Architecture decisions
 
-**Chosen:** `middleware.ts` matches `/dashboard/:path*`. It verifies the access cookie and redirects to `/login?from=<path>` if missing, invalid, or expired. It does **not** refresh tokens, and it never matches `/login`, so a redirect loop is structurally impossible.
+Each subsection gives the decision, the alternative, and the reason.
 
-**Alternative considered:** heavier middleware that also attempts a refresh before redirecting.
+### 6.1 Token storage
 
-**Why — and the limitation:** the middleware only protects the routes it matches. Every API Route Handler re-verifies auth independently in-handler; middleware is not a substitute for handler-level checks. The Edge runtime also can't run Node-only crypto or hold server-side state, which is part of why refresh logic doesn't belong here.
+**Decision:** The login Route Handler sets the tokens in httpOnly cookies. The handler sets three cookies:
+- `access_token` — httpOnly, SameSite=Lax, Secure in production, 15 minutes
+- `refresh_token` — httpOnly, SameSite=Lax, Secure in production, 7 days, scoped to `path=/api/auth`
+- `token_expiry` — readable by the client, contains only the expiry time
 
-### AD-4: Refresh = client fetch wrapper, single-flight mutex
+**Alternative:** Store the tokens in localStorage.
 
-**Chosen:** `lib/api-client.ts` exports `apiFetch()`. On a 401, it checks a module-scope `refreshPromise`; if null, it's set to `doRefresh()` and cleared in `finally`. Every concurrent 401 awaits the same promise, then retries its original request once. If the refresh fails, the wrapper runs a full logout: call `/api/auth/logout`, abort every in-flight request via a module-scope `AbortController`, set a logged-out flag that refuses new requests, notify registered listeners (closing the SSE connection), and redirect to `/login`. The controller is recreated after logout so a fresh login re-arms the wrapper. Callers swallow `AbortError` silently.
+**Reason:** JavaScript cannot read an httpOnly cookie. Thus a script injection cannot steal the tokens. The expiry time is not a secret. The client reads `token_expiry` to know when the token expires.
 
-**Alternative considered:** letting each caller detect and handle its own 401/refresh independently.
+The login response body also returns `{ accessToken, refreshToken, expiresIn, user: { id, email, name, role } }`, the exact shape the assessment specifies. The client does not store these values; the httpOnly cookies are the real session.
 
-**Why:** without a shared mutex, N concurrent requests that all 401 at once would each trigger their own refresh call — a real race condition. The single-flight pattern collapses that to exactly one refresh call no matter how many requests are in flight; this is unit-tested directly (`src/lib/api-client.test.ts`) as "the money test."
+### 6.2 Token format
 
-### AD-5: Refresh tokens do not rotate
+**Decision:** The tokens are signed JWTs. The application signs them with the `jose` library and the HS256 algorithm. The payload contains `sub`, `role`, and `exp`.
 
-**Chosen:** a deliberate scope decision. Refreshing does not rotate the refresh token.
+**Reason:** The `jose` library operates on the Edge runtime. Thus the middleware can verify the signature and the expiry. The `role` claim is the single source for role checks, in both the middleware and the mutation handler.
 
-**Alternative considered:** rotation with reuse detection.
+### 6.3 Middleware
 
-**Why:** non-rotating tokens make concurrent refreshes — including multiple browser tabs refreshing independently — idempotent with zero cross-tab coordination. **In production** this would need rotation, reuse detection, and a `BroadcastChannel` (or similar) so multiple tabs agree on which refresh "wins," since a rotated-and-invalidated token used by a second tab would otherwise incorrectly log the user out.
+**Decision:** The middleware protects the `/dashboard/*` routes. It verifies the access token cookie. If the token is missing, invalid, or expired, the middleware redirects the user to `/login`. The middleware keeps the target path in a `from` parameter.
 
-### AD-6: URL search params own query state
+The middleware does not refresh tokens.
 
-**Chosen:** `/dashboard/transactions?page=2&sort=createdAt&order=desc&status=flagged&from=...&to=...`. The server component reads `searchParams`, calls the pure `getTransactions()` query function directly (not over HTTP — see AD-10), and renders. Filter/sort/pagination controls are client components that call `router.push()`; there is no duplicated client-side query state.
+**Middleware limits:**
+- The middleware operates on the Edge runtime. Node APIs, such as Node crypto, are not available there.
+- The middleware protects only the routes that its matcher includes (`/dashboard/:path*`). It does not protect API routes. Each API Route Handler verifies the auth cookie again, independently.
+- The matcher never includes `/login`, so the middleware cannot redirect `/login` to `/login`. The loop is structurally impossible, not just handled.
 
-**Alternative considered:** client-side state (e.g. a `useState`/context store) for the current filters, fetched via `useEffect`.
+### 6.4 Token refresh
 
-**Why:** URL-as-state makes every view shareable and makes browser back/forward work automatically, for free. It also keeps the read path almost entirely server-rendered — the only client components in it are the controls themselves.
+**Decision:** A client fetch wrapper refreshes the token. The wrapper is in `lib/api-client.ts`.
 
-### AD-7: Server render seeds a client row store
+The flow:
+1. A request receives a 401 response.
+2. The wrapper examines a module-scope refresh promise.
+3. If no refresh is in progress, the wrapper starts one refresh and stores the promise.
+4. All concurrent 401 responses await the same promise.
+5. After the refresh, each request retries one time.
 
-**Chosen:** the server component passes its page of data as props; the client `TransactionsTable` seeds a Zustand store keyed by transaction id. SSE events are deduped by id (a keyed store makes this free), filtered against the *current* URL params before insertion — a match gets inserted respecting sort order, a non-match only increments an "N new" counter — and existing rows are updated in place. Navigation (a new page/filter) re-seeds the store from fresh server data. The table never calls `router.refresh()` in response to an SSE event.
+**How this prevents a refresh race condition:** Only one refresh promise can exist at one time. Concurrent failures share this promise. Thus the client sends only one refresh request, no matter how many requests 401 at once. This is unit-tested directly as the "money test" (`src/lib/api-client.test.ts`).
 
-**Alternative considered:** re-fetching the whole page on every SSE tick.
+**Refresh failure:** If the refresh fails, the wrapper starts the logout flow. See section 7.2.
 
-**Why:** `router.refresh()` on every tick would remount and refetch constantly, defeating the point of a live feed and causing visible flicker. The row store lets exactly one row re-render when it changes (rows are memoized by id), while everything else stays untouched.
+### 6.5 Refresh token rotation
 
-### AD-8: Mutations via Route Handlers, not Server Actions
+**Decision:** The refresh token does not rotate in this implementation.
 
-**Chosen:** `PATCH /api/transactions/[id]` — Zod-validated body (`{ flagged?, flagReason?, note? }`), auth read from the cookie in-handler, RBAC enforced server-side (`flagged` requires `role === "admin"`, otherwise 403 — hiding the flag button for an analyst is UX, not security). The client uses a TanStack Query mutation: `onMutate` snapshots the row and applies an optimistic update, `onError` rolls back from the snapshot and surfaces a sonner toast, `onSettled` reconciles with the server's response.
+**Reason:** The single-flight promise protects one browser tab. Two tabs do not share this promise. With rotation, a second tab can send a used token. A server with reuse detection then ends the session. Without rotation, concurrent refresh requests are idempotent. Thus multiple tabs stay safe without coordination.
 
-**Alternative considered:** Next.js Server Actions.
+**Production plan:** A production system must add:
+- Refresh token rotation
+- Reuse detection
+- Tab coordination with BroadcastChannel, or a server grace window
 
-**Why:** Route Handlers keep the mutation on the same explicit request/response contract as the rest of the API (shared Zod schemas, the same error shape, the same auth check pattern), and they compose cleanly with the existing `apiFetch` wrapper (mutex, abort, logout) that reads/writes already depend on.
+### 6.6 Transactions table
 
-### AD-9: SSE via a streaming Route Handler
+**Decision:** The URL search parameters hold the page, the sort, the status filter, and the date range. Example: `/dashboard/transactions?page=2&sort=createdAt&order=desc&status=flagged`.
 
-**Chosen:** `GET /api/transactions/stream` verifies the auth cookie in-handler (401 without one), then returns a `ReadableStream` over `text/event-stream`. A `setInterval` (3–5s) generates one realistic transaction, writes it into the mock db (so pagination numbers stay consistent with what the stream produces), and enqueues it as `data: {json}\n\n`. On `request.signal` abort — the client disconnecting — the interval is cleared and the controller closed, with a log line confirming the cleanup (no zombie intervals).
+A Server Component reads the parameters, then fetches the data with a same-origin `fetch()` call to the `GET /api/transactions` Route Handler, forwarding the request's cookie header, with `cache: "no-store"`. The Route Handler runs the pagination, sorting, and filtering (by status and by date range) on the server, and returns the page of data plus the total count. The filter, sort, and pagination controls are Client Components. They only push a new URL; the server does the rest.
 
-**Alternative considered:** polling the transactions endpoint on an interval.
+The page also renders a loading state (`loading.tsx`), an error state (`error.tsx`), and an empty state (`empty-state.tsx`) for a filter combination with no matches.
 
-**Why:** SSE is a natural fit for a one-way server-to-client feed and needs far less client bookkeeping than polling (no need to diff against the last poll, no risk of overlapping in-flight polls).
+**Reason:** This design gives shareable URLs. The back button restores the table state. The server and client concerns stay separate: the Server Component owns data, the Client Components own interaction.
 
-### AD-10: Caching = `no-store`, chosen for reasons, not by default
+### 6.7 Live updates
 
-**Chosen:** where a fetch call happens, `cache: 'no-store'` is used, framed as an explicit choice rather than an omission. In practice, though, the transactions page reads data by calling the `getTransactions()` query function directly (AD-6) — there is no `fetch()` involved in the page's own render path, so there is no fetch cache to opt out of. The relevant dynamic-rendering guarantee actually comes from the dashboard layout: it reads cookies (`cookies()`) to resolve the session on every request, which already forces the entire route segment to render dynamically.
+**Decision:** The server sends Server-Sent Events (SSE) from a streaming Route Handler. A client hook receives the events.
 
-**Alternative considered:** static generation with `revalidate` for the transactions page.
+The client obeys these rules:
+- The client keeps the rows in a store with the transaction ID as the key. A duplicate event cannot make a duplicate row.
+- The client applies the current filters to each event. An event that does not match the filters does not enter the table. A counter shows these events instead.
+- A new event that does match the filters is inserted in sort order, then the row list is capped at the current page size. A live event cannot grow the table past the page the user asked for.
+- The client updates only the changed row. Stable keys and memoized rows limit the render.
+- The client connects to the stream only in `useEffect`. Thus the server HTML and the first client render are equal. This prevents a hydration mismatch.
 
-**Why:** monitoring data is per-session and must never be stale, so opting out of caching is correct regardless of mechanism. `revalidate` **would** make sense for genuinely static reference content (e.g. a help/FAQ page) — nothing in this app currently needs that, which is itself informative: it shows the no-caching choice here was deliberate, not just the path of least resistance.
+### 6.8 Mutations
 
-### AD-11: Mock data in `lib/db.ts` with `globalThis`
+**Decision:** Mutations use a PATCH Route Handler, not a Server Action.
 
-**Chosen:** `globalThis.__db ??= { transactions: seed(), users: [...] }`, which survives Next's dev-mode hot reload (a fresh module instance would otherwise reset the mock db on every save). Query functions (`getTransactions`, `getTransaction`, `updateTransaction`, `addNote`, `generateTransaction`, `getUserById`/`getUserByEmail`) are pure and exported separately from any Route Handler, so they're directly unit-testable without spinning up a server. ~80 seeded transactions span the last 90 days, mostly NGN with some USD/GBP, log-distributed amounts, risk scores mostly 5–40 with rare spikes above 80. The third-newest transaction (visible on page 1 unfiltered) has `merchant` set to `<script>alert("xss")</script>` — a deliberate XSS canary.
+**Reason:** The assessment requires typed and validated Route Handlers. One API surface keeps the validation and the error shape consistent. The SameSite cookie protection then covers all mutations.
 
-**Alternative considered:** a real embedded database (SQLite) for the mock layer.
+The client applies an optimistic update. If the server rejects the mutation, the client restores the previous state and shows a toast.
 
-**Why:** the assessment doesn't need real persistence — `globalThis` plus pure functions gets hot-reload stability and unit-testability with none of the setup or migration overhead a real db would add for a throwaway mock layer.
+**Role check:** The handler reads the role from the token. Only the admin role can flag a transaction. Other roles receive a 403 response. The server enforces this rule. The hidden button in the analyst view is only a UI convenience.
 
-## Security
+### 6.9 Caching
 
-- **XSS:** React's default JSX escaping is the only defense needed, and it's sufficient — the codebase contains zero uses of `dangerouslySetInnerHTML` (verified by grep across `src/`). The seeded transaction with merchant `<script>alert("xss")</script>` renders as inert text everywhere it's displayed (verified in a real browser: the text is visible, no `alert()` dialog ever fires). API responses are JSON, never HTML, so there's no server-side HTML-injection surface either.
-- **Session teardown:** verified end-to-end by clearing all cookies mid-session and then triggering an authenticated mutation. The sequence observed: the request 401s → refresh is attempted → refresh also fails (no refresh cookie) → the wrapper calls logout, aborts in-flight requests, closes the SSE connection via a registered listener, and redirects to `/login`. The browser's cookie jar was confirmed empty afterward.
-- **CSRF:** every auth cookie is `SameSite=Lax`. A cross-site `<form>` POST (the classic CSRF vector) does not attach `SameSite=Lax` cookies on a cross-site simple request, so a forged form on another origin can't ride the victim's session to mutate data. Lax still allows the cookie on top-level navigations (e.g. following a link), which is why login/logout/refresh — all same-site, first-party requests — work normally.
-- **Sensitive data:** only the last 4 card digits ever exist anywhere in the schema (`cardLast4`) — there's no field that could hold a full PAN even by mistake. Amounts are minor-unit integers, never floats, formatted at the display edge via `Intl.NumberFormat`. No token or cookie value is ever passed to `console.*` — verified by grep; the codebase's only `console.log` call announces SSE cleanup, nothing sensitive.
-- **Cookie flags, verified via `Set-Cookie` headers on `/api/auth/login`:** `access_token` and `refresh_token` are `HttpOnly; SameSite=Lax` (`Secure` is added automatically in production, via `NODE_ENV`); `token_expiry` is the only cookie without `HttpOnly`, since the client needs to read it to schedule a proactive refresh — it holds a plain timestamp, not a secret.
+**Decision:** The transactions Route Handler call uses `cache: "no-store"`. The dashboard routes render dynamically.
 
-## Middleware limitations
+**Reason:** The pages read cookies. Cookie access already makes a route dynamic. The `no-store` option makes this decision explicit. Monitoring data must not be stale. The data is also different for each session.
 
-- `middleware.ts` only matches `/dashboard/:path*`. It does not protect API routes — every Route Handler re-verifies the access cookie independently.
-- It runs on the Edge runtime: no Node-only crypto, no persistent server-side state. `jose` was chosen specifically because it works here.
-- It never refreshes tokens; an expired access token always redirects to `/login`, even if a valid refresh token exists. The client-side `apiFetch` wrapper is what performs refreshes, and only for API calls, not page navigations.
+A static page with shared content would use `revalidate` instead. This application has no such page.
 
-## Testing
+---
 
-Six categories, 30 tests total:
+## 7. Security requirements
 
-1. **Refresh mutex** (`lib/api-client.test.ts`) — three concurrent 401s trigger exactly one refresh call and all three original requests are retried; a failed refresh forces logout and blocks further requests until a new login resets the client.
-2. **Query logic** (`lib/db.test.ts`) — pagination math, sort correctness (both directions), status filter, date-range filter, mutation behavior, and the XSS seed row's position.
-3. **RBAC** (`app/api/transactions/[id]/route.test.ts`) — an analyst's flag attempt gets 403; an admin's flag persists both the boolean and the status; an analyst's note succeeds.
-4. **Auth utilities** (`lib/auth.test.ts`) — JWT sign/verify round-trips, an expired token is rejected, a tampered token is rejected, and every cookie carries its spec'd flags.
-5. **Validators** (`lib/validators.test.ts`) — bad input is rejected: invalid status, `page=0`, malformed dates, an empty PATCH body, a flag without a reason.
-6. **Smoke** (`lib/smoke.test.ts`) — the suite itself runs.
+This section maps each requirement in assessment section 5 to the implementation.
 
-Skipped deliberately: component/E2E tests. In production this project would add Playwright specifically for the auth-redirect flows (unauthenticated → `/login?from=`, successful login → intended destination), since those depend on real browser navigation in a way unit tests can't exercise.
+### 7.1 XSS
 
-## Deliberate package absences
+One seeded transaction contains `<script>alert("xss")</script>` in the merchant field. It is visible on page 1 with no filters applied.
 
-| Not used | Why |
-| --- | --- |
-| **TanStack Table** | the table is server-driven via URL params + a Route Handler; adding client table-state machinery would blur the graded server/client separation |
-| **axios** | native `fetch` plus `lib/api-client.ts` *is* the refresh-mutex deliverable (AD-4) — a wrapper library would just hide the part being graded |
-| **react-hook-form** | the login form is two fields; `useState` + a Zod `.safeParse()` on submit is simpler than pulling in a form library for that |
-| **next-auth or any auth library** | the auth implementation (AD-1–AD-5) is itself what's being graded |
-| **date-fns / dayjs** | `Intl.DateTimeFormat` covers every display need, and date-range filtering is plain ISO-string comparison — both need no library |
+The protection:
+- React escapes all text content. The browser shows the payload as text. The script does not run.
+- The code does not use `dangerouslySetInnerHTML`, anywhere in the codebase.
+- The API returns JSON, not HTML. Thus the server has no injection surface.
+- The note body is also user content. The application renders it as text, the same way.
 
-TanStack Query is scoped to mutations only in this codebase; reads come from Server Components, and SSE feeds the Zustand store directly. There is intentionally no `useQuery` anywhere in the transaction list's read path.
+### 7.2 Session handling
 
-## Known limitation
+When the token expires and the refresh fails, the client:
+1. Calls the logout Route Handler. The handler clears the cookies.
+2. Aborts all in-flight requests with an AbortController.
+3. Closes the SSE connection.
+4. Sets a logged-out flag. The fetch wrapper then refuses new requests.
+5. Redirects the user to `/login`.
 
-The dashboard shell uses a fixed 240px sidebar with no mobile nav pattern (no hamburger menu, no collapse-to-icons breakpoint) — there's no ticket for one in the build plan, and no mobile Figma screens were provided. The responsive grid on `/dashboard/home` correctly stacks to one column with no horizontal overflow down to ~900px (tablet); below roughly 640px the fixed sidebar itself causes horizontal overflow. Production would need a dedicated mobile nav ticket to close this gap.
+**To see this live:** open devtools, go to Application → Cookies, delete `access_token` and `refresh_token`, then flag a transaction or add a note. The request 401s, the refresh attempt also fails with no refresh cookie, and the flow above runs.
+
+### 7.3 CSRF
+
+The auth cookies use `SameSite=Lax`. A cross-site request does not include these cookies. Thus a hostile site cannot forge an authenticated mutation against this application. This is the primary CSRF protection, and it needs no server-side CSRF token.
+
+`SameSite=Lax` still allows the cookie on a top-level navigation, such as following a link. This is why a same-site login, logout, or refresh request works normally.
+
+### 7.4 Sensitive data
+
+- The database stores only the last four digits of a card number. The full number does not exist in the system. The API cannot leak it.
+- The UI shows the card as `•••• 4242`.
+- The account numbers are masked, for example `0123••••89`.
+- The code does not log tokens or cookies. There is no `console.log`, `console.warn`, or `console.error` call anywhere in the source.
+- JavaScript cannot read the `access_token` or `refresh_token` cookies. Only the `token_expiry` cookie is readable, and it contains a timestamp, not a secret.
+
+---
+
+## 8. API conventions
+
+All Route Handlers obey these rules:
+- Every request and response has a TypeScript type, defined in `src/types/`.
+- Zod validates all input: the request body and the query parameters. Invalid input receives a 400 response.
+- All errors use one shape: `{ "error": { "code": "...", "message": "..." } }`.
+- The status codes are honest: 400 for bad input, 401 for missing or expired auth, 403 for an insufficient role, 404 for an unknown ID.
+
+---
+
+## 9. Tests
+
+Run `npm test`. The suite contains 30 tests across 6 files:
+- The refresh mutex test. Three concurrent 401 responses cause exactly one refresh call, and all three original requests are retried.
+- The query function tests: pagination, sort in both directions, status filter, date-range filter.
+- The role test. A PATCH request with the analyst role receives a 403 response for a flag attempt, and succeeds for a note.
+- The auth utility tests: JWT sign and verify, an expired token is rejected, a tampered token is rejected, and every cookie carries its correct flags.
+- The validator tests: bad input is rejected on every schema.
+
+A production system would add Playwright tests for the auth redirect flows.
+
+---
+
+## 10. Known simplifications
+
+These are deliberate scope decisions for a mock backend:
+- The refresh token does not rotate. See section 6.5.
+- The database is in memory. A restart clears the flag and note changes.
+- The `status` field and the `flagged` field overlap. The filter uses `status`. The mutation uses `flagged`. The flag action sets both.
+- The dashboard shell uses a fixed-width sidebar with a slide-out drawer below the `lg` breakpoint. There is no intermediate collapse-to-icons breakpoint for tablet widths.

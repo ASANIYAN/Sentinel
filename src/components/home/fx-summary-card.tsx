@@ -52,6 +52,7 @@ export function FxSummaryCard() {
   const [category, setCategory] = useState<(typeof CATEGORIES)[number]>(
     CATEGORIES[0],
   );
+  const [amountHidden, setAmountHidden] = useState(false);
 
   const isFx = chip !== "others";
 
@@ -91,13 +92,30 @@ export function FxSummaryCard() {
       <div>
         <p className="flex items-center gap-1.5 text-sm text-text-secondary">
           Total FX units
-          <Image src="/eye.svg" alt="" width={16} height={16} />
+          <button
+            type="button"
+            onClick={() => setAmountHidden((value) => !value)}
+            aria-pressed={amountHidden}
+            aria-label={amountHidden ? "Show total FX units" : "Hide total FX units"}
+            className="flex cursor-pointer items-center justify-center rounded-full transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
+          >
+            <Image src="/eye.svg" alt="" width={16} height={16} />
+          </button>
         </p>
         <div className="mt-2 flex items-center gap-2">
           <span className="flex size-8 items-center justify-center rounded-full bg-canvas text-sm text-text-secondary">
             $
           </span>
-          <AmountDisplay value={TOTAL_FX_UNITS} />
+          {amountHidden ? (
+            <span
+              aria-label="Amount hidden"
+              className="font-display text-[40px] font-bold leading-none text-text-primary"
+            >
+              ••••••
+            </span>
+          ) : (
+            <AmountDisplay value={TOTAL_FX_UNITS} />
+          )}
         </div>
       </div>
 
